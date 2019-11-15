@@ -76,8 +76,12 @@ void cleancontents(struct HashMap * hm)
 			struct HashElement * prev = curr;
 			curr = curr->next;
 			free(prev);
+			prev=NULL;
 		}
+		hm->contents[i] = NULL;
 	}
+	free(hm->contents);
+	hm->contents = NULL;
 
 }
 
@@ -144,10 +148,6 @@ int resize(int size, struct HashMap * hm)
 	}
 		cleancontents(hm);
 		
-		// make sure last 64 bytes in 1 block is freed!
-		free(hm->contents);
-		hm->contents = NULL;
-
 		// set all vars
 		hm->contents = tmp;
 		hm->capacity = size;
@@ -190,7 +190,6 @@ void HashMap_destroy(struct HashMap * hm)
 		if(hm->contents)
 		{
 			cleancontents(hm);
-			free(hm->contents);
 		}
 		free(hm);
 	}
