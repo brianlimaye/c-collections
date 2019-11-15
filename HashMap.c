@@ -79,36 +79,6 @@ void cleancontents(struct HashMap * hm)
 		}
 	}
 
-	/*
-	struct HashElement * element;
-	struct HashElement * next = NULL;
-	int i;
-
-	if(contents == NULL)
-	{
-		return -1;
-	}
-
-	for(i=0; i< capacity; i++)
-	{
-		element = contents[i];
-
-		while(element != NULL)
-		{
-			next = NULL;
-			next = element->next;
-			if(next != NULL)
-			{
-				free(next);
-			}
-			element = next;
-		}
-		free(contents[i]);
-		//To-do: free key and value
-	}
-	free(contents);	
-	return 0;
-	*/
 }
 
 
@@ -147,6 +117,7 @@ int resize(int size, struct HashMap * hm)
 	{
 		count = 0;
 		curr = hm->contents[i];
+
 		do
 		{
 			index = curr->hashcode % size;
@@ -157,9 +128,8 @@ int resize(int size, struct HashMap * hm)
 				newcurr->hashcode = curr->hashcode;
 				newcurr->key = curr->key;
 				newcurr->value = curr->value;
-				continue;
+				break;
 			}
-
 			
 			lastElement = findLastElement(newcurr);
 
@@ -169,9 +139,16 @@ int resize(int size, struct HashMap * hm)
 			lastElement->key = curr->key;
 			count++;
 		}
-		while((curr = curr->next) != NULL);
+		while((curr = curr->next) != NULL);	
+
 	}
 		cleancontents(hm);
+		
+		// make sure last 64 bytes in 1 block is freed!
+		free(hm->contents);
+		hm->contents = NULL;
+
+		// set all vars
 		hm->contents = tmp;
 		hm->capacity = size;
 		return 0;
@@ -191,7 +168,7 @@ struct HashMap * HashMap_init(int capacity)
 	hm->capacity = capacity;
 	hm->currentSize = 0;
 
-	hm->contents = (struct HashElement **) calloc(capacity, sizeof(struct Hashmap *));
+	hm->contents = (struct HashElement **) malloc(capacity * sizeof(struct Hashmap *));
 
 	for(i=0; i< capacity; i++)
 	{
@@ -201,15 +178,13 @@ struct HashMap * HashMap_init(int capacity)
 		hm->contents[i]->next = NULL;
 		hm->contents[i]->hashcode = 0;
 	}
+	
 
 	return hm;
 }
 
 void HashMap_destroy(struct HashMap * hm)
-{
-	int i;
-	struct HashElement * next = NULL;
-	
+{	
 	if(hm)
 	{
 		if(hm->contents)
@@ -395,18 +370,22 @@ int main()
 		}
 		
 		
+		
 		char * a = HashMap_get("031602", m);
 		printf("a is: %s\n", a);
 		char * b = HashMap_get("123456", m);
 		printf("b is %s\n", b);
 
-		//resize(100, m);
+		resize(100, m);
 
-		//assert(m->capacity == 100);
+		assert(m->capacity == 100);
 		char * c = HashMap_get("031602", m);
 		assert(strcmp(c, "Brian") == 0);
 		
 		HashMap_destroy(m);
+		m=NULL;
+
+		printf("HM: %p", m);
 
 		
 
