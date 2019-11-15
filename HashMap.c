@@ -212,26 +212,12 @@ void HashMap_destroy(struct HashMap * hm)
 	
 	if(hm)
 	{
-		/*
-		if(hm-> contents)
-		
+		if(hm->contents)
 		{
-
-			
-			for(i=0; i< hm->capacity; i++)
-			{
-				while((next = hm->contents[i]->next) != NULL)
-				{
-					free(next);
-				}
-				free(hm->contents[i]);
-			}
-		free(hm->contents);
+			cleancontents(hm);
+			free(hm->contents);
 		}
-		*/
-		cleancontents(hm);
 		free(hm);
-
 	}
 }
 
