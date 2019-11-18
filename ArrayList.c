@@ -46,7 +46,6 @@ void cleancontents(char ** contents, int capacity)
 		{
 			if(contents[i])
 			{
-				printf("contents[%d] is: %s\n", i, contents[i]);
 				free(contents[i]);
 			}
 		}
