@@ -13,9 +13,9 @@ struct ArrayList
 	char ** arr;
 };
 
-struct ArrayList* ArrayList_init(size_t capacity, size_t elementsize)
+struct ArrayList* ArrayList_init(int capacity, int elementsize)
 {
-	struct ArrayList * a = (struct ArrayList *) calloc(1, sizeof(struct ArrayList) * capacity);
+	struct ArrayList * a = (struct ArrayList *) malloc(sizeof(struct ArrayList) * capacity);
 	int i;
 	
 	if(a == NULL)
@@ -36,14 +36,29 @@ struct ArrayList* ArrayList_init(size_t capacity, size_t elementsize)
 	return a;
 }
 
+void cleancontents(char ** contents, int capacity)
+{
+	int i;
+
+	if(contents)
+	{
+		for(i=0; i< capacity; i++)
+		{
+			if(contents[i])
+			{
+				printf("contents[%d] is: %s\n", i, contents[i]);
+				free(contents[i]);
+			}
+		}
+		free(contents);
+	}
+}
+
 void ArrayList_destroy(struct ArrayList * a)
 {
 	if(a)
 	{
-		if(a-> arr)
-		{
-			free(a->arr);
-		}
+		cleancontents(a->arr, a->capacity);
 		free(a);
 	}
 }
@@ -68,57 +83,53 @@ int ArrayList_capacity(struct ArrayList * a)
 	return a->capacity;
 }
 
-char ** growArray(struct ArrayList * a)
+void growArray(struct ArrayList * a)
 {
 	int i;
 	int newCapacity = a->capacity * 2;
+
 	char ** newArr = (char **) malloc(newCapacity * sizeof(char *));
 
 	if(newArr == NULL)
 	{
-		return NULL;
+		return;
 	}
 
 	for(i = 0; i< newCapacity; i++)
 	{
 		newArr[i] = (char *) malloc(a->elementsize * sizeof(char));
 
-		if(i < a->capacity)
+		if(i < a->currentsize)
 		{
 			strcpy(newArr[i], a->arr[i]);
-			free(a->arr[i]);
 		}
 	}
-	free(a->arr);
-
-	return newArr;
+	cleancontents(a->arr, a->capacity);
+	
+	a->capacity = newCapacity;
+	a->arr = newArr;
 }
 
-void ensure_capacity(struct ArrayList * a)
+int ensure_capacity(struct ArrayList * a)
 {
-	int i;
 
-	if(a == NULL)
+	if (a == NULL)
 	{
-		return;
+		return -1;
 	}
-
 	if(a->currentsize >= (a->capacity / 2))
 	{
-		char ** newArr = NULL;
-
-		newArr = growArray(a);
-
-		a->arr = newArr;
-		a->capacity = a->capacity * 2;
+		growArray(a);
 	}
+	return 0;
 }
 
 void ArrayList_add(char * string, struct ArrayList * a)
 {
-	if(a != NULL)
+	int result = ensure_capacity(a);
+
+	if(result != -1)
 	{
-    	ensure_capacity(a);
 		strcpy(a->arr[a->currentsize], string);
 		a->currentsize++;
 	}
@@ -177,11 +188,15 @@ void ArrayList_remove1(int pos, struct ArrayList * a)
 void ArrayList_clear(struct ArrayList * a)
 {
 	int currentsize = ArrayList_size(a);
+	int elementsize = a->elementsize;
+
 	int i;
 
 	for(i=0; i< currentsize; i++)
 	{
-		memset(a->arr[i], 0, a->elementsize);
+		//memset(a->arr[i], 0, elementsize);
+		free(a->arr[i]);
+		a->arr[i] = (char *) malloc(elementsize * sizeof(char));	
 	}
 
 	a->currentsize = 0;
@@ -225,9 +240,7 @@ int main()
 	ArrayList_add("Leia", a);
 	ArrayList_add("Levi", a);
 
-	ArrayList_remove1(0, a);
-
-	ArrayList_add("Brian", a);
+	ArrayList_remove(1, a);
 
 	ArrayList_clear(a);
 
@@ -236,7 +249,7 @@ int main()
 	assert(ArrayList_size(a) == 0);
 
 	ArrayList_add("Melinda", a);
-
+	
 	assert(ArrayList_size(a) == 1);
 
 	assert(ArrayList_contains("Melinda", a));
