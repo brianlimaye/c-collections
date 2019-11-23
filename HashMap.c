@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include <assert.h>
+#include "HashMap.h"
 
 #define MAX_KEYSIZE 2000
 
@@ -19,21 +21,6 @@ int hashcode(char * str)
 	}
 	return v;
 }
-
-struct HashElement
-{
-	char * key;
-	struct HashElement * next;
-	int hashcode;
-	char * value;
-};
-
-struct HashMap
-{
-	int capacity;
-	int currentSize;
-	struct HashElement ** contents;
-};
 
 struct HashElement * createHashElement()
 {
@@ -64,7 +51,7 @@ struct HashElement * findLastElement(struct HashElement * hm)
 	return curr;
 }
 
-void cleancontents(struct HashMap * hm) 
+static void cleancontents(struct HashMap * hm) 
 {
 	int i;
 	for(i=0; i< hm->capacity; i++)
@@ -316,76 +303,3 @@ char * HashMap_get(char * key, struct HashMap * hm)
 
 	return NULL;
 }
-
-int main()
-{
-	int runs = 0;
-	int maxruns = 100;
-
-
-		
-		struct HashMap * m = HashMap_init(8);
-
-		char * u = HashMap_put("789990", "Marcel", m);
-
-		char * u1 = HashMap_put("77748", "Lucas", m);
-
-		char * v = HashMap_put("031602", "Brian", m);
-
-		assert(v == NULL);
-
-		char * v1 = HashMap_put("040174", "Bahar", m);
-
-		assert(v1 == NULL);
-
-		char * v2 = HashMap_put("031602", "JidtreeSis", m);
-
-		assert(strcmp(v2, "Brian") == 0);
-
-		char * v3 = HashMap_put("031602", "Brian", m);
-
-		assert(strcmp(v3, "JidtreeSis") == 0); 
-
-
-		
-		
-		while(runs++ < maxruns)
-		{
-			struct HashMap * m1 = HashMap_init(10);
-
-			char * str = "09890";
-
-			char * j = HashMap_put(str, "Ronald", m1);
-			assert(j == NULL);
-
-			char * k = HashMap_put(str, "Brian", m1);
-			assert(strcmp(k, "Ronald") == 0);
-
-			char * l = HashMap_put(str, "Ronald", m1);
-
-			assert(strcmp(l, "Brian") == 0);
-
-			HashMap_destroy(m1);
-		}
-		
-		
-		
-		char * a = HashMap_get("031602", m);
-		printf("a is: %s\n", a);
-		char * b = HashMap_get("123456", m);
-		printf("b is %s\n", b);
-
-		resize(100, m);
-
-		assert(m->capacity == 100);
-		char * c = HashMap_get("031602", m);
-		assert(strcmp(c, "Brian") == 0);
-		
-		HashMap_destroy(m);
-		m=NULL;
-
-		printf("HM: %p", m);
-
-		
-
-	}

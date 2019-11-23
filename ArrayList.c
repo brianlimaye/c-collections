@@ -4,14 +4,7 @@
 #include <ctype.h>
 #include <assert.h>
 
-
-struct ArrayList
-{
-	int currentsize;
-	int elementsize;
-	int capacity;
-	char ** arr;
-};
+#include "ArrayList.h"
 
 struct ArrayList* ArrayList_init(int capacity, int elementsize)
 {
@@ -36,7 +29,7 @@ struct ArrayList* ArrayList_init(int capacity, int elementsize)
 	return a;
 }
 
-void cleancontents(char ** contents, int capacity)
+static void cleancontents(char ** contents, int capacity)
 {
 	int i;
 
@@ -66,6 +59,8 @@ int ArrayList_size(struct ArrayList * a)
 {
 	return a->currentsize;
 }
+
+
 
 char * ArrayList_get(int pos, struct ArrayList * a)
 {
@@ -123,26 +118,35 @@ int ensure_capacity(struct ArrayList * a)
 	return 0;
 }
 
-void ArrayList_add(char * string, struct ArrayList * a)
+int ArrayList_add(char * string, struct ArrayList * a)
 {
+	if(strlen(string) > a->elementsize)
+	{
+		return -1;
+	}
+
 	int result = ensure_capacity(a);
 
 	if(result != -1)
 	{
 		strcpy(a->arr[a->currentsize], string);
 		a->currentsize++;
+		return 1;
 	}
+	return -1;
 }
 
-void ArrayList_remove(int pos, struct ArrayList * a)
+int ArrayList_remove(int pos, struct ArrayList * a)
 {
 	int i;
 	char * tmp;
 
-	if(pos < 0 || pos >= ArrayList_capacity(a))
+	if(pos < 0 || pos >= ArrayList_size(a))
 	{
-		return;
+		return -1;
 	}
+
+
 
 	memset(a->arr[pos], 0, a->elementsize * sizeof(char));
 
@@ -154,6 +158,7 @@ void ArrayList_remove(int pos, struct ArrayList * a)
 	}
 
 	a->currentsize--;
+	return 1;
 }
 
 void ArrayList_remove1(int pos, struct ArrayList * a)
@@ -215,46 +220,10 @@ int ArrayList_contains(char * str, struct ArrayList * a)
 	while(i < a->currentsize)
 	{
 		tmp1 = tmp[i++];
-		printf("TMP1 is: %s\n", tmp1);
 		if(strcmp(tmp1, str) == 0)
 		{
 			return 1;
 		}
 	}
 	return 0;
-}
-
-int main()
-{
-	struct ArrayList * a = ArrayList_init(3, 10);
-	printf("Capacity is: %d\n", a->capacity);
-
-
-
-	ArrayList_add("Brian", a);
-	ArrayList_add("Bahar", a);
-	ArrayList_add("Ayanna", a);
-	ArrayList_add("Sarah", a);
-	ArrayList_add("Jidtree", a);
-	ArrayList_add("Leia", a);
-	ArrayList_add("Levi", a);
-
-	ArrayList_remove(1, a);
-
-	ArrayList_clear(a);
-
-	assert(ArrayList_isEmpty);
-
-	assert(ArrayList_size(a) == 0);
-
-	ArrayList_add("Melinda", a);
-	
-	assert(ArrayList_size(a) == 1);
-
-	assert(ArrayList_contains("Melinda", a));
-
-	printf("a->arr[0] is: %s\n", a->arr[0]);
-
-	ArrayList_destroy(a);
-
 }
