@@ -3,6 +3,7 @@
 #include <assert.h>
 #include <string.h>
 #include "ArrayList.h"
+#include "HashMap.h"
 
 void testArrayList()
 {
@@ -64,10 +65,31 @@ void testArrayList()
 	assert(ArrayList_size(c) == 0);
 	ArrayList_add("Hilda", c);
 	assert(ArrayList_size(c) == 1);
-	
+	ArrayList_destroy(c);
+}
+
+void testHashMap()
+{
+	//Test 1: Tests HashMap_get and HashMap_put in normal circumstances.
+
+	struct HashMap * a = HashMap_init(10);
+	HashMap_put("022811", "Kylie", a);
+	HashMap_put("031602", "Brian", a);
+	HashMap_put("110300", "Sarah", a);
+	HashMap_put("031602", "Nopowon", a);
+	printf("%s\n", HashMap_get("031602", a));
+	printf("%s\n", HashMap_get("110300", a));
+	printf("%s\n", HashMap_get("123456", a));
+	printf("%s\n", HashMap_get("02281", a));
+
+	HashMap_put("052173", "Mona", a);
+	printf("%s\n", HashMap_get("052173", a));
+
+	HashMap_destroy(a);
 }
 
 int main()
 {
 	testArrayList();
+	testHashMap();
 }
