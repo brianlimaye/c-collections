@@ -20,6 +20,8 @@ void HashMap_destroy(struct HashMap * hm);
 
 char * HashMap_put(char * key, char * val, struct HashMap * hm);
 
+void HashMap_Iterator(struct HashMap * hm, void (*ptr)(char *, char *));
+
 char * HashMap_get(char * key, struct HashMap * hm);
 
 

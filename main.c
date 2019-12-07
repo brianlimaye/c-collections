@@ -5,6 +5,12 @@
 #include "ArrayList.h"
 #include "HashMap.h"
 
+void HashMap_printpair(char * key, char * value)
+{
+	printf("Key is: %s\t", key);
+	printf("Value is %s\n", value);
+}
+
 void testArrayList()
 {
 	//Test 1: Regularly Tests all Methods
@@ -85,11 +91,19 @@ void testHashMap()
 	HashMap_put("052173", "Mona", a);
 	printf("%s\n", HashMap_get("052173", a));
 
+	//Test 2: Tests Iterator.
+
+	printf("\n\n");
+	void (*ptr)(char *, char *);
+	ptr = HashMap_printpair;
+	HashMap_Iterator(a, ptr);
+
+
 	HashMap_destroy(a);
 }
 
 int main()
 {
-	testArrayList();
+	//testArrayList();
 	testHashMap();
 }

@@ -1,3 +1,4 @@
+//Last edited on 12-6-19
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -11,10 +12,11 @@ int hashcode(char * str)
 {
 	int i;
 	int v=0;
+	int len = strlen(str);
 
-	if(strlen(str) > 0)
+	if(len > 0)
 	{
-		for(i=0; i< strlen(str); i++)
+		for(i=0; i< len; i++)
 		{
 			v = 31 * v + str[i];
 		}
@@ -25,6 +27,12 @@ int hashcode(char * str)
 struct HashElement * createHashElement()
 {
 	struct HashElement * tmp = (struct HashElement *) malloc(sizeof(struct HashElement));
+
+	if(tmp == NULL)
+	{
+		fprintf(stderr, "Memory is not able to be allocated..");
+		exit(1);
+	}
 	return tmp;
 }
 
@@ -41,12 +49,10 @@ struct HashElement * findLastElement(struct HashElement * hm)
 	}
 
 	struct HashElement * curr = hm;
-	struct HashElement * nextElement = hm;
 
-	while(nextElement != NULL)
+	while(curr->next != NULL)
 	{
-		curr = nextElement;
-		nextElement = curr->next;
+		curr = curr->next;
 	}
 	return curr;
 }
@@ -54,21 +60,21 @@ struct HashElement * findLastElement(struct HashElement * hm)
 static void cleancontents(struct HashMap * hm) 
 {
 	int i;
+	struct HashElement * prev;
+	struct HashElement * curr;
 	for(i=0; i< hm->capacity; i++)
 	{
-		struct HashElement * curr = hm->contents[i];
+		curr = hm->contents[i];
 
 		while(curr != NULL)
 		{
-			struct HashElement * prev = curr;
+			prev = curr;
 			curr = curr->next;
 			free(prev);
-			prev=NULL;
 		}
 		hm->contents[i] = NULL;
 	}
 	free(hm->contents);
-	hm->contents = NULL;
 
 }
 
@@ -82,7 +88,6 @@ int resize(int size, struct HashMap * hm)
 
 	int i;
 	int count;
-	int k;
 	struct HashElement * curr;
 	struct HashElement * newcurr;
 	struct HashElement * lastElement;
@@ -191,20 +196,18 @@ char * HashMap_put(char * key, char * val, struct HashMap * hm)
 		return NULL;
 	}
 
-	if(sizeof(key) > MAX_KEYSIZE)
+	if(strlen(key) > MAX_KEYSIZE)
 	{
 		fprintf(stderr, "KEY IS TOO LARGE, CANNOT ENTER INTO MAP");
 		return NULL;
 	}
 
-	if(sizeof(val) > MAX_KEYSIZE)
+	if(strlen(val) > MAX_KEYSIZE)
 	{
 		fprintf(stderr, "VALUE IS TOO LARGE, CANNOT ENTER INTO MAP");
 		return NULL;
 	}
 
-	int i = 0;
-	int k;
 	int count = 0;
 	int hash = hashcode(key);
 	int index = hash % hm->capacity;
@@ -212,7 +215,6 @@ char * HashMap_put(char * key, char * val, struct HashMap * hm)
 	struct HashElement * tmp1 = hm->contents[index];
 	struct HashElement * curr;
 	struct HashElement * nextElement;
-	struct HashElement * setter;
 	char * oldVal;
 
 
@@ -282,7 +284,6 @@ char * HashMap_get(char * key, struct HashMap * hm)
 		return NULL;
 	}
 
-	int i;
 	struct HashElement * curr;
 	int hash = hashcode(key);
 	int index = hash % hm->capacity;
@@ -302,4 +303,18 @@ char * HashMap_get(char * key, struct HashMap * hm)
 	while((curr = curr->next) != NULL);
 
 	return NULL;
+}
+
+void HashMap_Iterator(struct HashMap * hm, void (*ptr)(char *, char *))
+{
+			int i;
+			for(i=0; i< hm->capacity; i++)
+			{
+				struct HashElement * he = hm->contents[i];
+				while(he != NULL)
+				{
+					ptr(he->key, he->value);
+					he = he->next;
+				}
+			}
 }
