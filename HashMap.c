@@ -232,7 +232,6 @@ char * HashMap_put(char * key, char * val, struct HashMap * hm)
 	{
 		
 		curr = tmp1;
-		nextElement = curr->next;
 		tmp1 = tmp1->next;
 
 		if(curr->hashcode == hash)
@@ -247,7 +246,7 @@ char * HashMap_put(char * key, char * val, struct HashMap * hm)
 		count++;
 
 	}
-	while(nextElement != NULL);
+	while(curr->next != NULL);
 
 	if(tmp1 == NULL)
 	{
