@@ -79,18 +79,3 @@ void StringBuilder_destroy(struct StringBuilder * sb)
 	free(sb);
 }
 
-int main()
-{
-	struct StringBuilder * sb = StringBuilder_init();
-	StringBuilder_append(sb, "John");
-	StringBuilder_append(sb, "ny");
-	StringBuilder_append(sb, " Bravo");
-	assert(strcmp(StringBuilder_toString(sb), "Johnny Bravo") == 0);
-	StringBuilder_clear(sb);
-	assert(strcmp(StringBuilder_toString(sb), "") == 0);
-	StringBuilder_append(sb, "Harry");
-	StringBuilder_append(sb, " Potter");
-	assert(strcmp(StringBuilder_toString(sb), "Harry Potter") == 0);
-	StringBuilder_destroy(sb);
-
-}

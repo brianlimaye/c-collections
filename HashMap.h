@@ -24,9 +24,3 @@ void HashMap_Iterator(struct HashMap * hm, void (*ptr)(char *, char *));
 
 char * HashMap_get(char * key, struct HashMap * hm);
 
-
-
-
-
-
-

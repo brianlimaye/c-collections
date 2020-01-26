@@ -8,7 +8,7 @@
 
 struct ArrayList* ArrayList_init(int capacity, int elementsize)
 {
-	struct ArrayList * a = (struct ArrayList *) malloc(sizeof(struct ArrayList) * capacity);
+	struct ArrayList * a = (struct ArrayList *) malloc(sizeof(struct ArrayList));
 	int i;
 	
 	if(a == NULL)
@@ -64,12 +64,12 @@ int ArrayList_size(struct ArrayList * a)
 
 char * ArrayList_get(int pos, struct ArrayList * a)
 {
-	if(a == NULL)
+	if(pos < 0 || pos > a->capacity || a == NULL)
 	{
 		return NULL;
 	}
-	char * c = a->arr[pos];
-	return c;
+
+	return a->arr[pos];
 }
 
 int ArrayList_capacity(struct ArrayList * a)

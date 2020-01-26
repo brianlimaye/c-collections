@@ -3,7 +3,7 @@ struct StringBuilder
 	char * string;
 };
 
-struct StringBuilder * StringBuilder_init()
+struct StringBuilder * StringBuilder_init();
 
 void StringBuilder_append(struct StringBuilder * sb, char * str);
 
