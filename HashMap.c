@@ -11,7 +11,7 @@
 int hashcode(char * str)
 {
 	int i;
-	int v=0;
+	int v = 0;
 	int len = strlen(str);
 
 	if(len > 0)
@@ -21,7 +21,7 @@ int hashcode(char * str)
 			v = 31 * v + str[i];
 		}
 	}
-	return v;
+	return abs(v);
 }
 
 struct HashElement * createHashElement()
@@ -191,6 +191,8 @@ void HashMap_destroy(struct HashMap * hm)
 //char * v2 = HashMap_put("031602", "JidtreeSis", m);
 char * HashMap_put(char * key, char * val, struct HashMap * hm)
 {
+	
+
 	if(key == NULL || val == NULL)
 	{
 		return NULL;
@@ -214,7 +216,6 @@ char * HashMap_put(char * key, char * val, struct HashMap * hm)
 	struct HashElement * tmp = hm->contents[index];
 	struct HashElement * tmp1 = hm->contents[index];
 	struct HashElement * curr;
-	struct HashElement * nextElement;
 	char * oldVal;
 
 
@@ -317,3 +318,5 @@ void HashMap_Iterator(struct HashMap * hm, void (*ptr)(char *, char *))
 				}
 			}
 }
+
+
