@@ -226,6 +226,7 @@ char * HashMap_put(char * key, char * val, struct HashMap * hm)
 		tmp->key = key;
 		tmp->value = val;
 		tmp->hashcode = hash;
+		hm->currentSize++;
 		return NULL;
 	}
 
@@ -241,6 +242,7 @@ char * HashMap_put(char * key, char * val, struct HashMap * hm)
 			{
 				oldVal = curr->value;
 				curr->value = val;
+				hm->currentSize++;
 				return oldVal;
 			}
 		}

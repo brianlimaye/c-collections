@@ -82,6 +82,9 @@ void testHashMap()
 {
 	struct HashMap * a = HashMap_init(10);
 
+	HashMap_put("031602", "Brian", a);
+	HashMap_put("110300", "Sarah", a);
+
 	//Test 1: Tests HashMap_get and HashMap_put in normal circumstances.
 	printf("%s\n", HashMap_get("031602", a));
 	printf("%s\n", HashMap_get("110300", a));
@@ -90,6 +93,7 @@ void testHashMap()
 
 	HashMap_put("052173", "Mona", a);
 	printf("%s\n", HashMap_get("052173", a));
+	assert(a->currentSize == 3);
 
 	//Test 2: Tests Iterator.
 
@@ -117,7 +121,7 @@ void testStringBuilder()
 }
 int main()
 {
-	testArrayList();
+	//testArrayList();
 	testHashMap();
 	testStringBuilder();
 }
