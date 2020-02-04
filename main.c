@@ -93,7 +93,7 @@ void testHashMap()
 
 	HashMap_put("052173", "Mona", a);
 	printf("%s\n", HashMap_get("052173", a));
-	assert(a->currentSize == 3);
+	assert(HashMap_size(a) == 3);
 
 	//Test 2: Tests Iterator.
 

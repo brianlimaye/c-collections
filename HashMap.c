@@ -187,11 +187,19 @@ void HashMap_destroy(struct HashMap * hm)
 	}
 }
 
+int HashMap_size(struct HashMap * hm)
+{
+	if(hm == NULL)
+	{
+		return -1;
+	}
+	return hm->currentSize;
+}
+
 //To-Do: How do I determine if the positions are full...
 //char * v2 = HashMap_put("031602", "JidtreeSis", m);
 char * HashMap_put(char * key, char * val, struct HashMap * hm)
 {
-	
 
 	if(key == NULL || val == NULL)
 	{
@@ -208,6 +216,11 @@ char * HashMap_put(char * key, char * val, struct HashMap * hm)
 	{
 		fprintf(stderr, "VALUE IS TOO LARGE, CANNOT ENTER INTO MAP");
 		return NULL;
+	}
+
+	if(HashMap_size(hm) == hm->capacity - 1)
+	{
+		resize(hm->capacity * 2, hm);
 	}
 
 	int count = 0;
@@ -320,5 +333,3 @@ void HashMap_Iterator(struct HashMap * hm, void (*ptr)(char *, char *))
 				}
 			}
 }
-
-
